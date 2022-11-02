@@ -187,9 +187,26 @@ func noteEdit(c *fiber.Ctx) error {
 	})
 
 }
-func noteDelete() {
+func noteDelete(c *fiber.Ctx) error {
 
+	var data map[string]interface{}
+
+	err := c.BodyParser(&data)
+	if err != nil {
+		return c.JSON(map[string]interface{}{
+			"err":     err,
+			"message": "Silmede hata var",
+		})
+
+	}
+	note := models.Not{}
+	database.Database.Db.Where("id = ?", data["iddddd"]).Delete(&note)
+	return c.JSON(map[string]interface{}{
+
+		"message": "Silme başarılı",
+	})
 }
+
 func main() {
 	app := fiber.New()
 
@@ -216,6 +233,6 @@ func main() {
 
 	app.Post("/note/delete", noteDelete)
 
-	log.Fatal(app.Listen(":80"))
+	log.Fatal(app.Listen(":8080"))
 
 }

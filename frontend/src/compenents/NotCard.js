@@ -26,14 +26,13 @@ const NotCard = (props) => {
   const [editId, setEditId] = useState(-1);
   const [editDetail, setEditDetail] = useState("Editleneceği Seçin");
 
-  // const toggle = () => setModal(!modalAcikMi);
   const setEditNote = (editNote) => {
     setEditDetail(editNote.note_detail);
     setEditTitle(editNote.title);
     setEditId(editNote.id);
   };
   useEffect(() => {
-    axios.get(" http://127.0.0.1:80/not").then((res) => {
+    axios.get(" http://127.0.0.1:8080/not").then((res) => {
       setNots(res.data.not);
     });
   }, []);
@@ -42,14 +41,14 @@ const NotCard = (props) => {
       alert("Değiştirmek istediğinizi seçin");
       return;
     }
-    const saveNote = {
+    const editNote = {
       title: editTitle,
       note_detail: editDetail,
       id: editId,
     };
-    console.log(saveNote);
+    console.log(editNote);
 
-    axios.post("http://127.0.0.1:80/note/edit", saveNote).then((res) => {
+    axios.post("http://127.0.0.1:8080/note/edit", editNote).then((res) => {
       if (res.status === 200) {
         alert("Düzenleme Başarılı");
         const newNot = nots.map((not) => {
@@ -62,6 +61,26 @@ const NotCard = (props) => {
         setNots(newNot);
       }
     });
+  };
+
+  const setDeleteNote = (id) => {
+    const silecegim = { iddddd: id };
+    axios
+      .post("http://127.0.0.1:8080/note/delete", silecegim)
+      .then((res) => {
+        if (res.status === 200) {
+          alert("Silme Başarılı");
+          const newNot = nots.filter((not) => {
+            if (not.id !== id) {
+              return not;
+            }
+          });
+          setNots(newNot);
+        }
+      })
+      .catch((err) => {
+        alert("Hata Var");
+      });
   };
   return (
     <Container>
@@ -105,7 +124,13 @@ const NotCard = (props) => {
                     </div>
                   </Col>
                   <Col sm="6">
-                    <Button>Delete</Button>
+                    <Button
+                      onClick={() => {
+                        setDeleteNote(newnot.id);
+                      }}
+                    >
+                      Delete
+                    </Button>
                   </Col>
                 </Row>
               </Card>
