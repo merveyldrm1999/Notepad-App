@@ -9,7 +9,7 @@ const AddNote = () => {
     const note = { title: title, note_detail: detail };
     console.log(note);
 
-    axios.post("http://127.0.0.1:80/note/create", note).then((res) => {
+    axios.post("http://127.0.0.1:8080/note/create", note).then((res) => {
       console.log(res);
       if (res.data.status === 200) {
         alert("not eklendi");
